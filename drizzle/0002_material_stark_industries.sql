@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `repeat` text DEFAULT 'none' NOT NULL;
