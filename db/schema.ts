@@ -7,6 +7,7 @@ export const events = sqliteTable('events', {
  date: text('date').notNull(), endDate: text('end_date').notNull(), time: text('time').notNull(),
  endTime: text('end_time').notNull(), allDay: integer('all_day').notNull(), category: text('category').notNull(),
  location: text('location').notNull(), note: text('note').notNull(), author: text('author').notNull(),
- repeat: text('repeat').notNull().default('none'), created: integer('created').notNull(), updated: integer('updated').notNull(), deleted: integer('deleted').notNull().default(0),
+ participants: text('participants').notNull().default('[]'), repeat: text('repeat').notNull().default('none'), created: integer('created').notNull(), updated: integer('updated').notNull(), deleted: integer('deleted').notNull().default(0),
 });
+
 

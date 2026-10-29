@@ -1,0 +1,1 @@
+ALTER TABLE `events` ADD `participants` text DEFAULT '[]' NOT NULL;
