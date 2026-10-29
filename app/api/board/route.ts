@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers';
+import {allowedOrigin,visitorId} from '../../../lib/visitor';
 export async function GET(request:Request){
 
  const db=env.DB!;
@@ -8,10 +9,10 @@ export async function GET(request:Request){
  return Response.json({posts:p.results,comments:c.results,hearts:h.results},{headers:{'Cache-Control':'no-store'}});
 }
 export async function POST(request:Request){
- const visitor=request.headers.get('cookie')?.match(/(?:^|; )family_visitor=([a-f0-9-]{36})(?:;|$)/)?.[1] || crypto.randomUUID();
+ const visitor=visitorId(request) || crypto.randomUUID();
  const owner='visitor:'+visitor;
 
- if(request.headers.get('origin')!==new URL(request.url).origin)return Response.json({error:'허용되지 않은 요청'},{status:403});
+ if(!allowedOrigin(request))return Response.json({error:'허용되지 않은 요청'},{status:403});
  try{
  const data:any=await request.json(); const db=env.DB!; const id=crypto.randomUUID();
  const author=data.anonymous?'익명의 가족':String(data.author||'가족').trim().slice(0,20)||'가족';
@@ -40,4 +41,5 @@ export async function POST(request:Request){
  return Response.json({ok:true},{headers:{'Set-Cookie':'family_visitor='+visitor+'; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000'+(new URL(request.url).protocol==='https:'?'; Secure':'')}});
  }catch(e){return Response.json({error:e instanceof Error?e.message:'저장하지 못했어요. 다시 시도해주세요.'},{status:400})}
 }
+
 

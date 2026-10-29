@@ -1,4 +1,5 @@
 "use client";
+import {apiFetch,apiUrl} from '../lib/client-api';
 import {useEffect,useRef,useState} from 'react';
 import {CalendarDays,ChevronLeft,ChevronRight,Plus,MapPin,Clock,ArrowUpRight,X,Gift,Heart,Plane,Users,Star,Pencil,Trash2,Download,Check,RefreshCw,Search} from 'lucide-react';
 
@@ -43,7 +44,7 @@ const url=URL.createObjectURL(new Blob([content],{type:'text/calendar;charset=ut
 
 export function UpcomingEvents({onOpen}:{onOpen:()=>void}){
 const [events,setEvents]=useState<Event[]>([]),[failed,F]=useState(false);
-useEffect(()=>{let active=true;fetch('/api/events').then(async r=>{if(!r.ok)throw Error();const d:any=await r.json();if(active)setEvents(d.events)}).catch(()=>{if(active)F(true)});return()=>{active=false}},[]);
+useEffect(()=>{let active=true;apiFetch('/api/events').then(async r=>{if(!r.ok)throw Error();const d:any=await r.json();if(active)setEvents(d.events)}).catch(()=>{if(active)F(true)});return()=>{active=false}},[]);
 const today=todayKey(),next=nextEvents(events,today).slice(0,3);
 return <section className="upcomingStrip"><div className="stripHeading"><span className="miniCalendar"><CalendarDays size={19}/></span><div><b>함께할 다음 순간</b><small>우리 가족의 약속을 한곳에</small></div><button onClick={onOpen}>가족 달력 <ArrowUpRight size={15}/></button></div><div className="stripEvents">{next.length?next.map(e=><button key={e.id} onClick={onOpen}><span className="stripDate">{e.date.slice(5,7)}<b>{e.date.slice(8)}</b></span><span><b>{e.title}</b><small>{dateBadge(e,today)} · {stamp(e)}</small></span><span className="eventDot" style={{background:kinds[e.category]?.color}}/></button>):<button className="stripEmpty" onClick={onOpen}>{failed?'달력에서 일정을 다시 확인해보세요.':'다가오는 가족 약속이 있나요? 첫 일정을 남겨보세요.'}<Plus size={17}/></button>}</div></section>
 }
@@ -62,7 +63,7 @@ const monthly=visible.filter(e=>e.date<=keyOf(last)&&e.endDate>=keyOf(first));
 const dayEvents=visible.filter(e=>occurs(e,selected));
 const upcoming=nextEvents(filtered,today);
 const nearest=upcoming[0];
-async function load(){try{const r=await fetch('/api/events');const d:any=await r.json();if(!r.ok)throw Error(d.error);V(d.events);E('');return d.events as Event[]}catch(e:any){E(e.message||'일정을 불러오지 못했어요.');return null}finally{Y(true)}}
+async function load(){try{const r=await apiFetch('/api/events');const d:any=await r.json();if(!r.ok)throw Error(d.error);V(d.events);E('');return d.events as Event[]}catch(e:any){E(e.message||'일정을 불러오지 못했어요.');return null}finally{Y(true)}}
 useEffect(()=>{load()},[]);
 useEffect(()=>{if(!toast)return;const t=setTimeout(()=>TO(''),4500);return()=>clearTimeout(t)},[toast]);
 useEffect(()=>{
@@ -77,8 +78,8 @@ function moveMonth(delta:number){const d=new Date(Date.UTC(year,mon-1+delta,1));
 function create(date=selected){const value=fresh(date);value.author=localStorage.getItem('family-name')||'';W(value);EI('');FE('');DE(null);O(true)}
 function edit(e:Event){W({...e});EI(e.id);DE(null);FE('');O(true)}
 function update<K extends keyof Draft>(key:K,value:Draft[K]){W(d=>({...d,[key]:value,...(key==='date'&&String(value)>d.endDate?{endDate:String(value)}:{})}))}
-async function save(e:React.FormEvent){e.preventDefault();S(true);FE('');try{const r=await fetch('/api/events',{method:editId?'PATCH':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...draft,id:editId})});const d:any=await r.json();if(!r.ok)throw Error(d.error);localStorage.setItem('family-name',draft.author);O(false);D(draft.date);M(draft.date.slice(0,7));F('all');Q('');TO(editId?'일정을 수정했어요.':'가족 달력에 새 일정을 남겼어요.');await load()}catch(e:any){FE(e.message)}finally{S(false)}}
-async function deleteEvent(){if(!detail)return;S(true);FE('');try{const r=await fetch('/api/events',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:detail.id})});const d:any=await r.json();if(!r.ok)throw Error(d.error);DE(null);RM(false);TO('일정을 삭제했어요.');await load()}catch(e:any){FE(e.message)}finally{S(false)}}
+async function save(e:React.FormEvent){e.preventDefault();S(true);FE('');try{const r=await apiFetch('/api/events',{method:editId?'PATCH':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...draft,id:editId})});const d:any=await r.json();if(!r.ok)throw Error(d.error);localStorage.setItem('family-name',draft.author);O(false);D(draft.date);M(draft.date.slice(0,7));F('all');Q('');TO(editId?'일정을 수정했어요.':'가족 달력에 새 일정을 남겼어요.');await load()}catch(e:any){FE(e.message)}finally{S(false)}}
+async function deleteEvent(){if(!detail)return;S(true);FE('');try{const r=await apiFetch('/api/events',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:detail.id})});const d:any=await r.json();if(!r.ok)throw Error(d.error);DE(null);RM(false);TO('일정을 삭제했어요.');await load()}catch(e:any){FE(e.message)}finally{S(false)}}
 function show(e:Event){DE(e);RM(false);FE('')}
 function eventRow(e:Event){const k=kinds[e.category]||kinds.other;const Icon=k.icon;return <button className="calendarEventRow" key={e.id+e.date} onClick={()=>show(e)}><span className={'kindIcon '+e.category}><Icon size={18}/></span><span className="eventRowText"><b>{e.title}</b><small><Clock size={11}/>{stamp(e)}{e.location&&<><span>·</span><MapPin size={11}/>{e.location}</>}</small></span><ChevronRight size={16}/></button>}
 return <div className="calendarPage"><section className="calendarHero"><div><small className="calendarEyebrow">LITTLE PLANS, PRECIOUS MOMENTS</small><h1>함께할 날을<br/>하나씩 담아봐요<span>.</span></h1><p>생일도, 주말의 약속도, 그냥 보고 싶은 날도.<br/>우리 가족의 소중한 순간을 놓치지 않도록.</p><button className="primary" onClick={()=>create()}><Plus size={17}/> 새 일정 만들기</button></div><div className="calendarHeroArt" aria-hidden="true"><span className="artSpark">✦</span><div className="paperCalendar"><div className="paperTop">OUR FAMILY</div><strong>{dayDate(today).getUTCDate()}</strong><span>{dayDate(today).toLocaleDateString('ko-KR',{month:'long',weekday:'long',timeZone:'UTC'})}</span><Heart size={23}/></div><span className="artLeaf">🌿</span><span className="artFlower">✿</span></div></section>
@@ -96,5 +97,6 @@ return <div className="calendarPage"><section className="calendarHero"><div><sma
 </div>
 }
 function LeafNote(){return <span aria-hidden="true">🌱</span>}
+
 
 

@@ -1,6 +1,7 @@
 import {env} from 'cloudflare:workers';
+import {allowedOrigin,visitorId} from '../../../lib/visitor';
 
-const cookieId=(r:Request)=>r.headers.get('cookie')?.match(/(?:^|; )family_visitor=([a-f0-9-]{36})(?:;|$)/)?.[1];
+const cookieId=visitorId;
 const noStore={'Cache-Control':'no-store'};
 const fields='id,title,date,end_date AS endDate,time,end_time AS endTime,all_day AS allDay,category,location,note,author,repeat,created,updated';
 function validDate(value:string){const parsed=new Date(value+'T00:00:00Z');return /^\d{4}-\d{2}-\d{2}$/.test(value)&&value>='1900-01-01'&&value<='2199-12-31'&&Number.isFinite(parsed.getTime())&&parsed.toISOString().slice(0,10)===value}
@@ -29,7 +30,7 @@ export async function GET(r:Request){
  }catch{return Response.json({error:'일정을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'},{status:503,headers:noStore})}
 }
 async function mutate(r:Request){
- if(r.headers.get('origin')!==new URL(r.url).origin)return Response.json({error:'허용되지 않은 요청이에요.'},{status:403});
+ if(!allowedOrigin(r))return Response.json({error:'허용되지 않은 요청이에요.'},{status:403});
  try{
  const data:any=await r.json(); const visitor=cookieId(r)||crypto.randomUUID(),owner='visitor:'+visitor;
  const reply=(body:any,status=200)=>Response.json(body,{status,headers:{...noStore,'Set-Cookie':'family_visitor='+visitor+'; Path=/; HttpOnly; SameSite=Lax; Max-Age=31536000'+(new URL(r.url).protocol==='https:'?'; Secure':'')}});
@@ -54,4 +55,5 @@ async function mutate(r:Request){
 export const POST=mutate;
 export const PATCH=mutate;
 export const DELETE=mutate;
+
 
