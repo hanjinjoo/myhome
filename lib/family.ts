@@ -16,3 +16,8 @@ export function memberLabel(ids:string[]){
  return names.length>2?names[0]+' 외 '+(names.length-1)+'명':names.join('·')||'가족';
 }
 export function memberColor(ids:string[]){return ids.length===1?familyMembers.find(m=>m.id===ids[0])?.color||'#7c9c71':'#7c9c71'}
+
+export function familyBandColor(ids:string[]){
+ const colors:Record<string,string>={dad:'#2865a7',mom:'#a64e3f',first:'#7953a2',second:'#357448',third:'#796512'};
+ return ids.length===1?colors[ids[0]]||'#456c46':'#456c46';
+}
