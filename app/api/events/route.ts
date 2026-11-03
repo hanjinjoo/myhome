@@ -1,5 +1,5 @@
 import {env} from 'cloudflare:workers';
-import {familyMembers,eventMembers} from '../../../lib/family';
+import {familyMembers,eventMembers,birthdayTitle} from '../../../lib/family';
 import {allowedOrigin,visitorId} from '../../../lib/visitor';
 
 const cookieId=visitorId;
@@ -29,7 +29,7 @@ export async function GET(r:Request){
  try{
  const owner='visitor:'+(cookieId(r)||'');
  const result=await env.DB!.prepare('SELECT '+fields+', owner = ? AS canEdit FROM events WHERE deleted=0 ORDER BY date,time,created').bind(owner).all();
- return Response.json({events:result.results.map((e:any)=>({...e,participants:eventMembers({...e,participants:JSON.parse(e.participants||'[]')})}))},{headers:noStore});
+ return Response.json({events:result.results.map((e:any)=>({...e,title:birthdayTitle(e),participants:eventMembers({...e,participants:JSON.parse(e.participants||'[]')})}))},{headers:noStore});
  }catch{return Response.json({error:'일정을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'},{status:503,headers:noStore})}
 }
 async function mutate(r:Request){
@@ -58,6 +58,7 @@ async function mutate(r:Request){
 export const POST=mutate;
 export const PATCH=mutate;
 export const DELETE=mutate;
+
 
 
 
