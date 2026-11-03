@@ -41,3 +41,42 @@
 .calendarPage .cellEvent,.cellEventPeople strong{color:#43534b}
 .calendarPage .cellEvent .cellEventDescription{color:#58685f}
 .calendarPage .cellEvent:hover{filter:brightness(.97)}
+/* Mobile calendar: visible family choices and readable date/event hierarchy. */
+@media(max-width:650px){
+ .calendarShell .content{padding:18px 10px}
+ .calendarPage .calendarFilters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:14px 0}
+ .calendarPage .calendarFilters button{font-size:12px;padding:10px 5px;justify-content:center;white-space:nowrap;color:#586750;min-height:40px}
+ .familyViewFilters{gap:5px;margin:12px 0 17px;flex-wrap:wrap}
+ .familyViewFilters>span{font-size:11px;width:100%;margin-bottom:2px;color:#647459}
+ .familyViewFilters button{font-size:11px;padding:8px 10px;min-height:34px}
+ .familyRail{padding:14px 12px}
+ .familyRailHeading h3{font-size:13px}
+ .familyRail .wholeFamily{font-size:12px;top:9px;right:12px;padding:9px 12px}
+ .familyRail .familyCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;gap:9px;margin-top:19px;padding:3px}
+ .familyRail .familyPickRow{min-width:0;width:100%}
+ .familyRail .familyDragCard{gap:5px;padding:12px 5px}
+ .familyRail .familyDragCard b{font-size:13px}
+ .familyRail .memberAvatar{display:none}
+ .familyRail .familySelect{padding-left:8px;min-height:44px}
+ .familyRail .familySelect input{width:16px;height:16px}
+ .familyRail .dragHandle{font-size:14px}
+ .familyRail .familySelectionInfo{font-size:11px;line-height:1.8;margin:8px 3px 0;color:#6f7c65}
+ .familyRail .familySelectionInfo button{font-size:11px}
+ .calendarPage .calendarLayout{gap:18px}
+ .calendarPage .monthHeader{padding:18px 12px}
+ .calendarPage .monthHeader h3{font-size:23px}
+ .calendarPage .monthCount{font-size:11px;line-height:1.7}
+ .monthControls button{min-width:36px;min-height:38px}
+ .calendarPage .weekdays{font-size:12px}
+ .calendarPage .dayCell{min-height:100px;padding:7px 2px}
+ .calendarPage .dayNumber{font-size:13px;font-weight:700}
+ .calendarPage .cellEvents{gap:5px;margin-top:7px}
+ .calendarPage .cellEvent{padding:5px 2px;min-height:29px;gap:2px;justify-content:flex-start;border-radius:4px}
+ .calendarPage .cellEventPeople strong{font-size:11px;line-height:1.5;letter-spacing:0}
+ .calendarPage .cellEvent .cellEventDescription{display:block;font-size:10px;line-height:1.4;text-align:center}
+ .calendarPage .cellEvent .eventKindMark{font-size:10px}
+ .calendarPage .calendarHint{font-size:11px;line-height:1.8;flex-wrap:wrap}
+ .calendarPage .eventRowText b,.calendarPage .nextEvent b{font-size:13px}
+ .calendarPage .participantCaption{font-size:12px}
+ .calendarPage .eventRowText small,.calendarPage .nextEvent small{font-size:11px}
+}

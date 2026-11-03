@@ -8,7 +8,7 @@ import {CalendarDays,ChevronLeft,ChevronRight,Plus,MapPin,Clock,ArrowUpRight,X,G
 type Event={id:string;title:string;date:string;endDate:string;time:string;endTime:string;allDay:number;category:string;location:string;note:string;author:string;canEdit:number;participants:string[];repeat:string};
 type Draft=Omit<Event,'id'|'canEdit'>;
 const kinds:{[key:string]:{label:string;icon:typeof Heart;color:string}}={
-general:{label:'일반 일정',icon:Star,color:'#829876'},family:{label:'가족 모임',icon:Users,color:'#4f8062'},birthday:{label:'생일',icon:Gift,color:'#c98568'},anniversary:{label:'기념일',icon:Heart,color:'#b37697'},trip:{label:'여행·나들이',icon:Plane,color:'#688eaf'},other:{label:'기타',icon:Star,color:'#a2945f'}
+general:{label:'약속',icon:Star,color:'#829876'},family:{label:'가족 모임',icon:Users,color:'#4f8062'},birthday:{label:'생일',icon:Gift,color:'#c98568'},anniversary:{label:'기념일',icon:Heart,color:'#b37697'},trip:{label:'여행&나들이',icon:Plane,color:'#688eaf'},other:{label:'기타',icon:Star,color:'#a2945f'}
 };
 function todayKey(){const p=new Intl.DateTimeFormat('en',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());return ['year','month','day'].map(k=>p.find(v=>v.type===k)?.value).join('-')}
 const dayDate=(key:string)=>new Date(key+'T00:00:00Z');
