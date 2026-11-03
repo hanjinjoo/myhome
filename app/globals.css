@@ -26,3 +26,18 @@
 @media(max-width:900px){.familyRail .familyDragCard{padding-top:10px;padding-bottom:10px}.familyRail .familyCards{padding:4px 4px 7px}.familyRail .familyPickRow{min-width:112px}.familyRail .wholeFamily{padding:9px 12px}}
 @media(max-width:650px){.familyRail .familyDragCard b{font-size:12px}.familyRail .familyPickRow{min-width:109px}.familyRail .wholeFamily{font-size:10px;padding:7px 9px}.familyRail .memberAvatar{font-size:10px}.familyRail .familySelect input{width:13px;height:13px}}
 .familyRail .familyDragCard{gap:5px;padding-left:6px;padding-right:6px}.familyRail .familyDragCard b{white-space:nowrap;flex-shrink:0}.familyRail .memberAvatar{width:20px;flex-shrink:0}.familyRail .dragHandle{font-size:15px;flex-shrink:0}
+/* Quiet pastel family palette */
+.familyRail .familyPickRow,.familyRail .familyPickRow.isSelected{background:var(--member-soft);border-color:var(--member-soft);box-shadow:none}
+.familyRail .familyPickRow.isSelected{border-color:var(--member-color);box-shadow:0 0 0 2px #fffefa,0 0 0 3px var(--member-color)}
+.familyRail .familyDragCard,.familyRail .familyDragCard b,.familyRail .dragHandle{color:var(--member-color)}
+.familyRail .memberAvatar{background:#ffffff80;color:var(--member-color)}
+.familyRail .dragHandle{opacity:.65}
+.familyRail .familySelect input{accent-color:var(--member-color)}
+.familyRail .wholeFamily{background:#dcece5;border-color:#cbded5;color:#54766b;box-shadow:none}
+.familyRail .wholeFamily>span{color:#54766b}
+.familyRail .wholeFamily[aria-pressed=true]{box-shadow:0 0 0 2px #fffefa,0 0 0 3px #88aa9b}
+.familyRail .familyDragCard:hover,.familyRail .wholeFamily:hover{filter:brightness(.98)}
+.familyRail .familyDragCard:focus-visible,.familyRail .wholeFamily:focus-visible{outline-color:#667c70}
+.calendarPage .cellEvent,.cellEventPeople strong{color:#43534b}
+.calendarPage .cellEvent .cellEventDescription{color:#58685f}
+.calendarPage .cellEvent:hover{filter:brightness(.97)}
