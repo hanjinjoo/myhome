@@ -28,7 +28,7 @@ function clean(data:any){
 export async function GET(r:Request){
  try{
  const owner='visitor:'+(cookieId(r)||'');
- const result=await env.DB!.prepare('SELECT '+fields+', owner = ? AS canEdit FROM events WHERE deleted=0 ORDER BY date,time,created').bind(owner).all();
+ const result=await env.DB!.prepare('SELECT '+fields+', 1 AS canEdit, owner = ? AS canDelete FROM events WHERE deleted=0 ORDER BY date,time,created').bind(owner).all();
  return Response.json({events:result.results.map((e:any)=>({...e,title:birthdayTitle(e),participants:eventMembers({...e,participants:JSON.parse(e.participants||'[]')})}))},{headers:noStore});
  }catch{return Response.json({error:'일정을 불러오지 못했어요. 잠시 후 다시 시도해주세요.'},{status:503,headers:noStore})}
 }
@@ -45,12 +45,12 @@ async function mutate(r:Request){
  const id=String(data.id||'');
  const existing:any=await env.DB!.prepare('SELECT owner,participants FROM events WHERE id=? AND deleted=0').bind(id).first();
  if(!existing)return reply({error:'이미 삭제됐거나 찾을 수 없는 일정이에요.'},404);
- if(existing.owner!==owner)return reply({error:'일정을 만든 브라우저에서만 수정·삭제할 수 있어요.'},403);
+ if(r.method==='DELETE'&&existing.owner!==owner)return reply({error:'일정을 만든 브라우저에서만 삭제할 수 있어요.'},403);
  if(r.method==='DELETE'){
  await env.DB!.prepare('UPDATE events SET deleted=1,updated=? WHERE id=? AND owner=?').bind(Date.now(),id,owner).run();
  }else{
  const v=clean({...data,participants:data.participants??JSON.parse(existing.participants||'[]')});
- await env.DB!.prepare('UPDATE events SET title=?,date=?,end_date=?,time=?,end_time=?,all_day=?,category=?,location=?,note=?,author=?,repeat=?,participants=?,updated=? WHERE id=? AND owner=?').bind(v.title,v.date,v.endDate,v.time,v.endTime,v.allDay,v.category,v.location,v.note,v.author,v.repeat,v.participants,Date.now(),id,owner).run();
+ await env.DB!.prepare('UPDATE events SET title=?,date=?,end_date=?,time=?,end_time=?,all_day=?,category=?,location=?,note=?,author=?,repeat=?,participants=?,updated=? WHERE id=?').bind(v.title,v.date,v.endDate,v.time,v.endTime,v.allDay,v.category,v.location,v.note,v.author,v.repeat,v.participants,Date.now(),id).run();
  }
  return reply({ok:true});
  }catch(e){return Response.json({error:e instanceof Error?e.message:'일정을 저장하지 못했어요.'},{status:400,headers:noStore})}
