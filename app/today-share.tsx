@@ -10,8 +10,8 @@ export default function TodayShare({events,today}:{events:ShareEvent[];today:str
  const date=new Date(today+'T00:00:00Z').toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long',timeZone:'UTC'});
  const text=['🌿 우리 가족 오늘 일정',date+' · 한국 시간','',...events.flatMap(e=>{
   const time=e.allDay?'하루 종일':e.time+(e.endTime?'~'+e.endTime:'');
-  return ['• '+memberLabel(eventMembers(e))+' | '+time+' | '+e.title,...(e.location?['  📍 '+placeInfo(e.location).name,...(placeInfo(e.location).url?[placeInfo(e.location).url]:[])]:[]),...(e.date!==e.endDate?['  '+e.date+' ~ '+e.endDate+' · 진행 중인 일정']:[])];
- }),'','📅 가족 달력','https://hanjinjoo.github.io/myhome/'].join('\n');
+  return ['• '+memberLabel(eventMembers(e))+' | '+time+' | '+e.title,...(e.location?['  📍 '+placeInfo(e.location).name]:[]),...(e.date!==e.endDate?['  '+e.date+' ~ '+e.endDate+' · 진행 중인 일정']:[])];
+ })].join('\n');
  async function copy(){try{await navigator.clipboard.writeText(text);S('복사했어요. 카카오톡의 나와의 채팅이나 가족방에 붙여넣어 주세요.')}catch{S('아래 요약 내용을 길게 누르거나 전체 선택해서 복사해 주세요.')}}
  async function share(){
   if(!navigator.share){S('이 브라우저는 공유창을 지원하지 않아요. 요약 복사를 이용해 주세요.');return}
