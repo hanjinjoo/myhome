@@ -18,7 +18,7 @@ function clean(data:any){
  const category=String(data.category||'family');
  if(!['general','family','birthday','anniversary','trip','other'].includes(category))throw Error('일정 종류를 선택해주세요.');
  const location=String(data.location||'').trim(),note=String(data.note||'').trim(),author=String(data.author||'가족').trim()||'가족';
- if(location.length>160||note.length>2000||author.length>20)throw Error('장소는 160자, 메모는 2,000자, 이름은 20자까지 입력할 수 있어요.');
+ if(location.length>600||note.length>2000||author.length>20)throw Error('장소는 600자, 메모는 2,000자, 이름은 20자까지 입력할 수 있어요.');
  const repeat=data.repeat==='yearly'?'yearly':'none';
  if(repeat==='yearly'&&date!==endDate)throw Error('매년 반복 일정은 시작일과 종료일을 같은 날로 정해주세요.');
  const participants=Array.isArray(data.participants)?[...new Set(data.participants)]:[];
