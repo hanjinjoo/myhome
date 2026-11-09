@@ -54,7 +54,7 @@ const today=todayKey(),next=nextEvents(events,today).slice(0,3);
 return <section className="upcomingStrip"><div className="stripHeading"><span className="miniCalendar"><CalendarDays size={19}/></span><div><b>함께할 다음 순간</b><small>우리 가족의 약속을 한곳에</small></div><button onClick={onOpen}>가족 달력 <ArrowUpRight size={15}/></button></div><div className="stripEvents">{next.length?next.map(e=><button key={e.id} onClick={onOpen}><span className="stripDate">{e.date.slice(5,7)}<b>{e.date.slice(8)}</b></span><span><b>{e.title}</b><small>{dateBadge(e,today)} · {stamp(e)}</small></span><span className="eventDot" style={{background:memberColor(eventMembers(e))}}/></button>):<button className="stripEmpty" onClick={onOpen}>{failed?'달력에서 일정을 다시 확인해보세요.':'다가오는 가족 약속이 있나요? 첫 일정을 남겨보세요.'}<Plus size={17}/></button>}</div></section>
 }
 
-export default function FamilyCalendar(){
+export default function FamilyCalendar({active=true}:{active?:boolean}){
 const today=todayKey();
 const [events,V]=useState<Event[]>([]),[ready,Y]=useState(false),[error,E]=useState(''),[month,M]=useState(today.slice(0,7)),[selected,D]=useState(today),[filter,F]=useState('all'),[query,Q]=useState(''),[mode,VM]=useState('month'),[modal,O]=useState(false),[draft,W]=useState<Draft>(fresh(today)),[editId,EI]=useState(''),[detail,DE]=useState<Event|null>(null),[busy,S]=useState(false),[formError,FE]=useState(''),[toast,TO]=useState(''),[remove,RM]=useState(false);
 
@@ -92,7 +92,8 @@ const upcoming=nextEvents(filtered,today);
 const nearest=upcoming[0];
 async function load(){try{const r=await apiFetch('/api/events');const d:any=await r.json();if(!r.ok)throw Error(d.error);V(d.events);E('');return d.events as Event[]}catch(e:any){E(e.message||'일정을 불러오지 못했어요.');return null}finally{Y(true)}}
 useEffect(()=>{load()},[]);
-useEffect(()=>{if(!ready||error||summaryChecked.current===today)return;summaryChecked.current=today;try{if(localStorage.getItem('family-summary-seen')!==today){localStorage.setItem('family-summary-seen',today);SO(true)}}catch{SO(true)}},[ready,error,today]);
+useEffect(()=>{if(!active||!ready||error||summaryChecked.current===today)return;summaryChecked.current=today;try{if(localStorage.getItem('family-summary-seen')!==today){localStorage.setItem('family-summary-seen',today);SO(true)}}catch{SO(true)}},[active,ready,error,today]);
+useEffect(()=>{if(!active){SO(false);O(false);DE(null);DS(false);PM(null)}},[active]);
 function closeSummary(){SO(false);try{localStorage.setItem('family-summary-seen',today)}catch{}}
 const weekStart=addDays(today,-((dayDate(today).getUTCDay()+6)%7)),weekEnd=addDays(weekStart,6);
 const summaryEvents=events.flatMap(e=>e.repeat==='yearly'?[Number(today.slice(0,4))-1,Number(today.slice(0,4)),Number(today.slice(0,4))+1].map(y=>inYear(e,y)):[e]).filter(e=>e.date<=weekEnd&&e.endDate>=weekStart).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
