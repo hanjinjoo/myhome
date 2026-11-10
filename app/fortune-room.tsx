@@ -3,6 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import {ArrowLeft,ArrowUpRight,ChevronDown,Heart,Moon,Sparkles,Star,Sun} from 'lucide-react';
 import {familyMembers} from '../lib/family';
 import {dailyFortune,koreaDateKey} from '../lib/fortune';
+import FortuneShare from './fortune-share';
 import './fortune-room.css';
 function MoonCard(){return <svg viewBox="0 0 220 270" fill="none" aria-hidden="true"><rect x="10" y="10" width="200" height="250" rx="90" stroke="currentColor" opacity=".35"/><rect x="20" y="20" width="180" height="230" rx="82" stroke="currentColor" opacity=".18"/><path d="M137 78a43 43 0 1 0 9 72 38 38 0 0 1-9-72Z" fill="currentColor" opacity=".85"/><path d="m153 60 4 12 12 4-12 4-4 12-4-12-12-4 12-4Zm-92 96 3 9 9 3-9 3-3 9-3-9-9-3 9-3Zm94 26 2 7 7 2-7 2-2 7-2-7-7-2 7-2Z" fill="currentColor"/><circle cx="69" cy="72" r="2" fill="currentColor"/><circle cx="164" cy="132" r="2" fill="currentColor"/><path d="M68 205h84M82 213h56" stroke="currentColor" opacity=".45"/><path d="m110 35 3 6-3 6-3-6Z" fill="currentColor"/></svg>}
 export default function FortuneRoom({onBack}:{onBack:()=>void}){
@@ -28,6 +29,7 @@ export default function FortuneRoom({onBack}:{onBack:()=>void}){
  {stage==='open'&&member&&fortune&&<section className="fortuneResults" aria-labelledby="fortuneResultsTitle" key={member.id+day}>
  <div className="fortuneResultsHeader"><div><span className="fortuneEyebrow">TODAY, JUST FOR YOU</span><h2 id="fortuneResultsTitle">{member.name}의 하루 이야기</h2><p>{date} · 한국 시간</p></div><span className="fortuneReadyBadge">오늘의 운세</span></div>
  <p className="fortuneResultsIntro">{fortune.reading.message}</p>
+ <FortuneShare key={member.id+day} fortune={fortune}/>
  <div className="fortuneResultGrid">
  <details className="fortuneResultPanel" open><summary><span className="fortuneResultIcon"><Sparkles size={20}/></span><span><b>상세 운세</b><small>오늘의 흐름을 조금 더 자세히</small></span><ChevronDown className="fortuneResultChevron" size={17}/></summary><div className="fortuneResultBody"><span>오늘의 흐름</span><h3>{fortune.reading.title}</h3><p>{fortune.reading.body}</p><span>관계의 한마디</span><p>{fortune.relationship}</p></div></details>
  <details className="fortuneResultPanel chemistry"><summary><span className="fortuneResultIcon"><Heart size={20}/></span><span><b>가족 케미</b><small>오늘은 {fortune.partner.name}에게 말을 걸어봐요</small></span><ChevronDown className="fortuneResultChevron" size={17}/></summary><div className="fortuneResultBody"><span>같은 별 아래, 우리</span><div className="fortuneFamilyDots"><span style={{background:member.soft,color:member.color}}>{member.name}</span><Heart size={15}/><span style={{background:fortune.partner.soft,color:fortune.partner.color}}>{fortune.partner.name}</span></div><h3>오늘의 대화 한 조각</h3><p>{fortune.conversation}</p><div className="fortuneEmptyNote">궁합 점수 대신, 서로를 알아가는 작은 질문이에요.</div></div></details>
