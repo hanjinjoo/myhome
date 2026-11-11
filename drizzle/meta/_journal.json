@@ -29,6 +29,13 @@
       "when": 1793264834275,
       "tag": "0003_outstanding_sunspot",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1794293855618,
+      "tag": "0004_flaky_night_nurse",
+      "breakpoints": true
     }
   ]
 }
